@@ -1,0 +1,195 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+interface SidebarProps {
+  userRole: 'platform_owner' | 'admin' | 'member';
+  userName: string;
+  onLogout: () => void;
+}
+
+export default function Sidebar({ userRole, userName, onLogout }: SidebarProps) {
+  const pathname = usePathname();
+  const [portalsOpen, setPortalsOpen] = useState(false);
+
+  const isActive = (path: string) => pathname === path;
+
+  const mainNavItems = [
+    { name: 'Hub', path: '/dashboard', icon: '🏠' },
+    { name: 'VOPSy', path: '/vopsy', icon: '🤖' },
+    { name: 'Comms', path: '/comms', icon: '📧' },
+    { name: 'Academy', path: '/academy', icon: '🎓' },
+    { name: 'Vault', path: '/vault', icon: '📁' },
+    { name: 'Studio', path: '/studio', icon: '🎨' },
+  ];
+
+  const settingsItems = [
+    { name: 'Integrations', path: '/settings/integrations', icon: '🔗' },
+    { name: 'AI Settings', path: '/settings/ai', icon: '⚙️' },
+    { name: 'Subscription', path: '/settings/subscription', icon: '💳' },
+  ];
+
+  const portalTypes = [
+    { name: 'AI Free', path: '/admin/portals/free', color: 'bg-slate-500' },
+    { name: 'AI Assistant', path: '/admin/portals/assistant', color: 'bg-blue-500' },
+    { name: 'AI Operations', path: '/admin/portals/operations', color: 'bg-indigo-500' },
+    { name: 'AI Enterprise', path: '/admin/portals/enterprise', color: 'bg-purple-500' },
+    { name: 'AI Advisory', path: '/admin/portals/advisory', color: 'bg-emerald-500' },
+    { name: 'Tax Client', path: '/admin/portals/tax', color: 'bg-amber-500' },
+    { name: 'AI Cohort', path: '/admin/portals/cohort', color: 'bg-orange-500' },
+  ];
+
+  return (
+    <aside className="w-64 bg-slate-900 border-r border-slate-800 min-h-screen flex flex-col">
+      {/* Logo */}
+      <div className="p-6 border-b border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+            <span className="text-white font-black text-lg">V</span>
+          </div>
+          <div>
+            <h1 className="text-sm font-black text-white uppercase tracking-tight">Virtual OPS</h1>
+            <p className="text-[10px] text-orange-500 font-medium">Powered by VOPSy</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Navigation */}
+      <nav className="flex-1 p-4 space-y-1">
+        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Main</p>
+        {mainNavItems.map((item) => (
+          <Link
+            key={item.path}
+            href={item.path}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+              isActive(item.path)
+                ? 'bg-orange-500/20 text-orange-500'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+            }`}
+          >
+            <span className="text-lg">{item.icon}</span>
+            <span className="text-sm font-medium">{item.name}</span>
+          </Link>
+        ))}
+
+        {/* Owner Only: Portal Management */}
+        {userRole === 'platform_owner' && (
+          <>
+            <div className="pt-4">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Portals</p>
+              <button
+                onClick={() => setPortalsOpen(!portalsOpen)}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">🚀</span>
+                  <span className="text-sm font-medium">Portal Management</span>
+                </div>
+                <span className={`text-xs transition-transform ${portalsOpen ? 'rotate-180' : ''}`}>▼</span>
+              </button>
+              
+              {portalsOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {portalTypes.map((portal) => (
+                    <Link
+                      key={portal.path}
+                      href={portal.path}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                        isActive(portal.path)
+                          ? 'bg-slate-800 text-white'
+                          : 'text-slate-500 hover:bg-slate-800/50 hover:text-slate-300'
+                      }`}
+                    >
+                      <span className={`w-2 h-2 rounded-full ${portal.color}`}></span>
+                      {portal.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Owner Tools */}
+            <div className="pt-4">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Owner</p>
+              <Link
+                href="/admin/cohort"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                  isActive('/admin/cohort')
+                    ? 'bg-orange-500/20 text-orange-500'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <span className="text-lg">🎟️</span>
+                <span className="text-sm font-medium">Cohort Invites</span>
+              </Link>
+              <Link
+                href="/admin/audit"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                  isActive('/admin/audit')
+                    ? 'bg-orange-500/20 text-orange-500'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <span className="text-lg">📋</span>
+                <span className="text-sm font-medium">Audit Log</span>
+              </Link>
+              <Link
+                href="/admin/exports"
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                  isActive('/admin/exports')
+                    ? 'bg-orange-500/20 text-orange-500'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <span className="text-lg">📊</span>
+                <span className="text-sm font-medium">Exports</span>
+              </Link>
+            </div>
+          </>
+        )}
+
+        {/* Settings */}
+        <div className="pt-4">
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3 px-3">Settings</p>
+          {settingsItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${
+                isActive(item.path)
+                  ? 'bg-orange-500/20 text-orange-500'
+                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <span className="text-lg">{item.icon}</span>
+              <span className="text-sm font-medium">{item.name}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
+
+      {/* User Profile */}
+      <div className="p-4 border-t border-slate-800">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-600 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold text-sm">
+              {userName?.charAt(0)?.toUpperCase() || 'U'}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-white truncate">{userName || 'User'}</p>
+            <p className="text-xs text-slate-500 capitalize">{userRole?.replace('_', ' ')}</p>
+          </div>
+        </div>
+        <button
+          onClick={onLogout}
+          className="w-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white py-2 px-3 rounded-lg text-sm transition-all"
+        >
+          Sign Out
+        </button>
+      </div>
+    </aside>
+  );
+}
