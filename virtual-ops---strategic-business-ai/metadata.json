@@ -1,7 +1,0 @@
-{
-  "name": "Virtual Ops - Strategic Business AI",
-  "description": "The official strategic assistant for Virtual Ops LLC. Market research, opportunity analysis, and business automation suite.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
-}
