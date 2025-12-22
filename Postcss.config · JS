@@ -1,6 +1,4 @@
 
-Copy
-
 module.exports = {
   plugins: {
     tailwindcss: {},
