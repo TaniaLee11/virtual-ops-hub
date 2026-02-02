@@ -44,10 +44,16 @@ export default function CohortManagementPage() {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading invites:', error);
+        // Table might not exist yet - that's okay
+        setInvites([]);
+        return;
+      }
       setInvites(data || []);
     } catch (error) {
       console.error('Error loading invites:', error);
+      setInvites([]);
     }
   };
 
@@ -83,7 +89,10 @@ export default function CohortManagementPage() {
           sent_at: new Date().toISOString()
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       setMessage({ type: 'success', text: `Invite sent to ${newEmail}` });
       setNewEmail('');
@@ -105,7 +114,10 @@ export default function CohortManagementPage() {
         })
         .eq('id', inviteId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       setMessage({ type: 'success', text: `Invite resent to ${email}` });
       loadInvites();
@@ -125,7 +137,10 @@ export default function CohortManagementPage() {
         .delete()
         .eq('id', inviteId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
 
       setMessage({ type: 'success', text: `Invite deleted for ${email}` });
       loadInvites();
