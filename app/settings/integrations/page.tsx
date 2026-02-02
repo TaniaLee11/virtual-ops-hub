@@ -8,6 +8,7 @@ export default function IntegrationsPage() {
   const supabase = createClientComponentClient();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -19,6 +20,7 @@ export default function IntegrationsPage() {
 
   const connectGoogle = async () => {
     setLoading(true);
+    setErrorMessage(null);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -28,13 +30,16 @@ export default function IntegrationsPage() {
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
+            login_hint: 'tania@virtualopsassist.com', // Force hint for the correct account
           },
         },
       });
       if (error) throw error;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error connecting to Google:', error);
-      alert('Failed to connect to Google. Please check your Supabase configuration.');
+      // Fix for [object Object] error: extract the message string
+      const message = error.message || error.error_description || 'An unknown error occurred';
+      setErrorMessage(message);
     } finally {
       setLoading(false);
     }
@@ -48,17 +53,23 @@ export default function IntegrationsPage() {
           <p className="text-slate-400 mt-1">Connect your favorite tools to Virtual OPS Hub</p>
         </div>
 
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-xl text-red-500 text-sm">
+            <strong>Connection Error:</strong> {errorMessage}
+          </div>
+        )}
+
         <div className="grid gap-6">
           {/* Google Integration */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-2xl">
-                G
+                <img src="https://www.google.com/favicon.ico" className="w-6 h-6" alt="Google" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white">Google Workspace</h3>
                 <p className="text-sm text-slate-400 text-balance">
-                  Sync your emails, calendar, and drive for AI-powered insights.
+                  Connect your <span className="text-white font-medium">tania@virtualopsassist.com</span> account for AI-powered insights.
                 </p>
               </div>
             </div>
