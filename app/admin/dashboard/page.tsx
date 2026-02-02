@@ -20,7 +20,7 @@ export default function AdminDashboardPage() {
     { name: 'AI Enterprise', count: 0, color: 'border-purple-500', price: '$499+' },
     { name: 'AI Advisory', count: 0, color: 'border-emerald-500', price: null },
     { name: 'Tax Client', count: 0, color: 'border-amber-500', price: null },
-    { name: 'AI Cohort', count: 0, color: 'border-orange-500', price: '90-day trial' },
+    { name: 'AI Cohort', count: 0, color: 'border-orange-500', price: '60-day pass' },
   ];
 
   return (
@@ -67,7 +67,7 @@ export default function AdminDashboardPage() {
                 <h4 className="font-bold text-white">{portal.name}</h4>
                 {portal.name === 'AI Cohort' && (
                   <span className="text-[10px] bg-orange-500/20 text-orange-500 px-2 py-0.5 rounded">
-                    90-Day
+                    60-Day
                   </span>
                 )}
               </div>
