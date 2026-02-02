@@ -80,19 +80,43 @@ export default function CohortManagementPage() {
         return;
       }
 
-      // Create new invite
-      const { error } = await supabase
+      // Create new invite with generated code
+      const { data: newInvite, error: insertError } = await supabase
         .from('cohort_invites')
         .insert({
           email: newEmail,
+          status: 'pending',
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('Database error:', insertError);
+        throw insertError;
+      }
+
+      // Send email via API
+      const emailResponse = await fetch('/api/cohort/send-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newEmail,
+          inviteCode: newInvite.invite_code
+        })
+      });
+
+      if (!emailResponse.ok) {
+        throw new Error('Failed to send email');
+      }
+
+      // Update invite status to sent
+      await supabase
+        .from('cohort_invites')
+        .update({
           status: 'sent',
           sent_at: new Date().toISOString()
-        });
-
-      if (error) {
-        console.error('Database error:', error);
-        throw error;
-      }
+        })
+        .eq('id', newInvite.id);
 
       setMessage({ type: 'success', text: `Invite sent to ${newEmail}` });
       setNewEmail('');
