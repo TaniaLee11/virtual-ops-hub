@@ -3,10 +3,6 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 const SYSTEM_PROMPT = `You are VOPSy, an AI operations assistant for Virtual OPS Hub. 
 
 Your capabilities:
@@ -49,6 +45,10 @@ export async function POST(request: NextRequest) {
         response: "I'm not fully configured yet. Please add your OpenAI API key to the environment variables (OPENAI_API_KEY) to enable AI responses.",
       });
     }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Call OpenAI GPT-4
     const completion = await openai.chat.completions.create({
