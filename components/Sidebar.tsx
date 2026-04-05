@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  HomeIcon, 
-  UserGroupIcon, 
+import {
+  HomeIcon,
+  UserGroupIcon,
   Cog6ToothIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  MegaphoneIcon,
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -21,6 +22,7 @@ export default function Sidebar({ userRole, userName, onLogout }: SidebarProps) 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'AI Cohort', href: '/admin/cohort', icon: UserGroupIcon, adminOnly: true },
+    { name: 'Outbound', href: '/admin/outbound', icon: MegaphoneIcon, adminOnly: true },
     { name: 'Settings', href: '/settings', icon: Cog6ToothIcon },
   ];
 
